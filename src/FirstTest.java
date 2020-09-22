@@ -128,6 +128,17 @@ public class FirstTest {
         );
     }
 
+    @Test
+    public void testSearchInputHasText(){
+
+        assertElementHasText(
+                By.xpath("//android.widget.LinearLayout[@resource-id='org.wikipedia:id/search_container']/android.widget.TextView"),
+                "Search Wikipedia",
+                "Search field doesnt contain 'Search Wikipedia'"
+        );
+
+    }
+
     private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds)
     {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
@@ -165,6 +176,13 @@ public class FirstTest {
     private WebElement waitForElementAndClear(By by, String error_message, long timeoutInSeconds){
         WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
         element.clear();
+        return element;
+    }
+
+    private WebElement assertElementHasText(By by, String expected_text, String error_message){
+        WebElement element = waitForElementPresent(by, "Element " + by + " not found");
+        String actual_text = element.getText();
+        Assert.assertEquals(error_message, expected_text, actual_text);
         return element;
     }
 
