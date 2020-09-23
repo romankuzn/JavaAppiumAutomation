@@ -129,14 +129,58 @@ public class FirstTest {
     }
 
     @Test
-    public void testSearchInputHasText(){
-
+    public void testSearchInputHasText() {
         assertElementHasText(
                 By.xpath("//android.widget.LinearLayout[@resource-id='org.wikipedia:id/search_container']/android.widget.TextView"),
                 "Search Wikipedia",
                 "Search field doesnt contain 'Search Wikipedia'"
         );
+    }
 
+    @Test
+    public void testVerifySearchReturnsTwoPlusResults(){
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_container"),
+                "Cannot find 'Search Wikipedia' input",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text, 'Search…')]"),
+                "Boeing",
+                "Cannot find search input",
+                5
+        );
+
+        waitForElementPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']//*[@text='Aerospace and defense manufacturer in the United States']"),
+                "Cannot find 'Aerospace and defense manufacturer in the United States' topic searching by 'Boeing'",
+                15
+        );
+
+        waitForElementPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']//*[@text='1952 strategic bomber aircraft family by Boeing']"),
+                "Cannot find '1952 strategic bomber aircraft family by Boeing' topic searching by 'Boeing'",
+                15
+        );
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_close_btn"),
+                "Cannot find X to cancel search",
+                5
+        );
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_close_btn"),
+                "Cannot find X to cancel search",
+                5
+        );
+
+        waitForElementNotPresent(
+                By.id("org.wikipedia:id/search_close_btn"),
+                "X is still present on the page",
+                5
+        );
     }
 
     private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds)
