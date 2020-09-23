@@ -11,6 +11,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
+import java.util.List;
 
 public class FirstTest {
 
@@ -135,6 +136,8 @@ public class FirstTest {
                 "Search Wikipedia",
                 "Search field doesnt contain 'Search Wikipedia'"
         );
+
+
     }
 
     @Test
@@ -183,6 +186,29 @@ public class FirstTest {
         );
     }
 
+    @Test
+    public void testSearchResultsContainText(){
+        String search_text = "Core";
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_container"),
+                "Cannot find 'Search Wikipedia' input",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text, 'Search…')]"),
+                search_text,
+                "Cannot find search input",
+                5
+        );
+
+        assertElementsContainText(
+                By.id("org.wikipedia:id/page_list_item_title"),
+                search_text,
+                "Text '" + search_text + "' not found");
+    }
+
     private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds)
     {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
@@ -229,5 +255,33 @@ public class FirstTest {
         Assert.assertEquals(error_message, expected_text, actual_text);
         return element;
     }
+
+    private WebElement assertElementContainsText(By by, String expected_text, String error_message){
+        WebElement element = waitForElementPresent(by, "Element " + by + " not found");
+        String actual_text = element.getText();
+        boolean is_contains = actual_text.contains(expected_text);
+        Assert.assertTrue(error_message, is_contains);
+        return element;
+    }
+
+    private List <WebElement> assertElementsContainText(By by, String expected_text, String error_message){
+        List <WebElement> webElements = waitAndGetWebElements(by, "Element by " + by + " not found");
+        String actual_text;
+        boolean is_contains;
+        int current_index = 0;
+        for(WebElement webElement:webElements){
+            current_index++;
+            actual_text = webElement.getText();
+            is_contains = actual_text.contains(expected_text);
+            Assert.assertTrue(error_message + " for element #" + current_index, is_contains);
+        }
+        return webElements;
+    }
+
+    private List <WebElement> waitAndGetWebElements(By by, String error_message){
+        waitForElementPresent(by, error_message, 5);
+        return driver.findElements(by);
+    }
+
 
 }
