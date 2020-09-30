@@ -498,6 +498,191 @@ public class FirstTest {
 
     }
 
+    @Test
+    public void saveTwoArticlesToMyListAndDeleteOne(){
+        String search_request_1 = "Airbus A380";
+        String xpath_search_result_title = "(//*[@resource-id='org.wikipedia:id/page_list_item_title'])";
+        String xpath_search_result_title_1 = xpath_search_result_title + "[1]";
+        String xpath_search_result_title_2 = xpath_search_result_title + "[2]";
+        String id_article_title = "org.wikipedia:id/view_page_title_text";
+        String name_of_folder = "Airbus airplanes";
+        String xpath_my_list_title = "//*[@resource-id='org.wikipedia:id/item_title'][@text='" + name_of_folder + "']";
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_container"),
+                "Cannot find 'Search Wikipedia' input",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text, 'Search…')]"),
+                search_request_1,
+                "Cannot find search input",
+                5
+        );
+
+        waitForElementPresent(By.xpath(xpath_search_result_title), "Element not found by xpath " + xpath_search_result_title);
+
+        int amount_of_search_results = getAmountOfElements(
+                By.xpath(xpath_search_result_title)
+        );
+
+        Assert.assertTrue(
+                "Number of search results is less than 2",
+                amount_of_search_results > 1
+        );
+
+        String search_result_title_1 = waitForElementAndGetAttribute(
+               By.xpath(xpath_search_result_title_1),
+               "text",
+               "Search result title not found by Xpath " + xpath_search_result_title_1,
+               15);
+
+        waitForElementAndClick(
+                By.xpath(xpath_search_result_title_1),
+                "Cannot find search result by xpath " + xpath_search_result_title_1,
+                5
+        );
+
+        waitForElementPresent(
+                By.id(id_article_title),
+                "Cannot find article title",
+                15
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.ImageView[@content-desc='More options']"),
+                "Cannot find button to open article options",
+                5);
+
+        // waiting for last element in drop down menu. Otherwise it clicks wrong menu item.
+        waitForElementPresent(By.xpath("//*[@resource-id='org.wikipedia:id/title'][@text='Font and theme']"),
+                "Cannot find 'Font and theme' menu item");
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/title'][@text='Add to reading list']"),
+                "Cannot find option to add article to reading list",
+                5
+        );
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/onboarding_button"),
+                "Cannot find 'Got it' tip overlay",
+                5
+        );
+
+        waitForElementAndClear(
+                By.id("org.wikipedia:id/text_input"),
+                "Cannot find input to set name of articles folder",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.id("org.wikipedia:id/text_input"),
+                name_of_folder,
+                "Cannot put text into articles folder input",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@text='OK']"),
+                "Cannot press OK button",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.ImageButton[@content-desc='Navigate up']"),
+                "Cannot close article, cannot find X link",
+                5
+        );
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_container"),
+                "Cannot find 'Search Wikipedia' input",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text, 'Search…')]"),
+                search_request_1,
+                "Cannot find search input",
+                5
+        );
+
+        String search_result_title_2 = waitForElementAndGetAttribute(
+                By.xpath(xpath_search_result_title_2),
+                "text",
+                "Search result title not found by Xpath " + xpath_search_result_title_2,
+                15
+                );
+
+        waitForElementAndClick(
+                By.xpath(xpath_search_result_title_2),
+                "Cannot find search result by xpath " + xpath_search_result_title_2,
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.ImageView[@content-desc='More options']"),
+                "Cannot find button to open article options",
+                5);
+
+        // waiting for last element in drop down menu. Otherwise it clicks wrong menu item.
+        waitForElementPresent(By.xpath("//*[@resource-id='org.wikipedia:id/title'][@text='Font and theme']"),
+                "Cannot find 'Font and theme' menu item");
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/title'][@text='Add to reading list']"),
+                "Cannot find option to add article to reading list",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath(xpath_my_list_title),
+                "Cannot find created folder",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.ImageButton[@content-desc='Navigate up']"),
+                "Cannot close article, cannot find X link",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.FrameLayout[@content-desc='My lists']"),
+                "Cannot find navigation button to My Lists",
+                5
+        );
+
+        // intentionally added because from time to time Appium clicks wrong element without this step
+        waitForElementPresent(By.xpath(xpath_my_list_title), "Cannot find created folder");
+
+        waitForElementAndClick(
+                By.xpath(xpath_my_list_title),
+                "Cannot find created folder",
+                5
+        );
+
+        swipeElementToLeft(
+                By.xpath("//*[@text='" + search_result_title_1 + "']"),
+                "Cannot find saved article " + search_result_title_1
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@text='" + search_result_title_2 +"']"),
+                "Cannot find saved article " + search_result_title_2,
+                5
+        );
+
+        assertElementHasText(
+                By.id("org.wikipedia:id/view_page_title_text"),
+                search_result_title_2,
+                "Article not found with title " + search_result_title_2
+        );
+
+    }
+
     private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds)
     {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
