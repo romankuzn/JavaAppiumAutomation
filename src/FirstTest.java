@@ -33,6 +33,7 @@ public class FirstTest {
         capabilities.setCapability("app","/Users/roman-automation/IdeaProjects/JavaAppiumAutomation/apks/org.wikipedia.apk");
 
         driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+        setDeviceOrientation(ScreenOrientation.PORTRAIT);
     }
 
     @After
@@ -683,7 +684,8 @@ public class FirstTest {
 
     }
 
-    @Test public void verifyArticleHasTitle(){
+    @Test
+    public void verifyArticleHasTitle(){
         String search_request = "Boeing 777";
         String xpath_search_result_title = "(//*[@resource-id='org.wikipedia:id/page_list_item_title'])";
         String id_article_title = "org.wikipedia:id/view_page_title_text";
@@ -714,6 +716,8 @@ public class FirstTest {
 
 
     }
+
+
 
     private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds)
     {
@@ -869,5 +873,10 @@ public class FirstTest {
 
     }
 
+    public void setDeviceOrientation(ScreenOrientation screen_orientation){
+        if (driver.rotation() != screen_orientation){
+            driver.rotate(screen_orientation);
+        }
+    }
 
 }
