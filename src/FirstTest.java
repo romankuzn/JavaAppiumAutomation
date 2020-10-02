@@ -683,6 +683,38 @@ public class FirstTest {
 
     }
 
+    @Test public void verifyArticleHasTitle(){
+        String search_request = "Boeing 777";
+        String xpath_search_result_title = "(//*[@resource-id='org.wikipedia:id/page_list_item_title'])";
+        String id_article_title = "org.wikipedia:id/view_page_title_text";
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_container"),
+                "Cannot find 'Search Wikipedia' input",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text, 'Search…')]"),
+                search_request,
+                "Cannot find search input",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath(xpath_search_result_title),
+                "Cannot find search result by Xpath " + xpath_search_result_title,
+                5
+        );
+
+        assertElementPresent(
+                By.id(id_article_title),
+                "Cannot find article title"
+        );
+
+
+    }
+
     private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds)
     {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
@@ -806,9 +838,6 @@ public class FirstTest {
                 .moveTo(left_x, middle_y)
                 .release()
                 .perform();
-
-
-
     }
 
     private int getAmountOfElements(By by){
@@ -828,5 +857,17 @@ public class FirstTest {
         WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
         return element.getAttribute(attribute);
     }
+
+    private void assertElementPresent(By by, String error_message){
+        try {
+            driver.findElement(by);
+        }
+        catch(Exception e){
+            String default_message = "An element '" + by.toString() + "' suppose to be present.";
+            throw new AssertionError(default_message + " " + error_message);
+        }
+
+    }
+
 
 }
