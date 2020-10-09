@@ -19,6 +19,18 @@ public class SearchTests extends CoreTestCase
         SearchPageObject.waitForSearchResult("Object-oriented programming language");
     }
 
+    @Test
+    public void testSearchTitleAndDescription()
+    {
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+
+        SearchPageObject.initSearchInput();
+        SearchPageObject.typeSearchLine("Ferrum");
+        SearchPageObject.waitForElementByTitleAndDescription("Ferrum", "Wikimedia disambiguation page");
+        SearchPageObject.waitForElementByTitleAndDescription("Ferrum College", "Private college in Ferrum, Virginia, U.S.");
+        SearchPageObject.waitForElementByTitleAndDescription("Ferrum, Virginia", "Census designated place");
+    }
+
     @Test public void testCancelSearch()
     {
         SearchPageObject SearchPageObject = new SearchPageObject(driver);
@@ -69,4 +81,6 @@ public class SearchTests extends CoreTestCase
         SearchPageObject.clickCancelSearch();
         SearchPageObject.waitForCancelButtonNotPresent();
     }
+
+
 }
