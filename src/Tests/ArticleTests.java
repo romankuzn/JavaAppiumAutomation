@@ -55,7 +55,7 @@ public class ArticleTests extends CoreTestCase
         ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
 
         ArticlePageObject.assertElementPresent(
-                By.id(ArticlePageObject.getTitleElement()),
+                ArticlePageObject.getTitleElement(),
                 "Cannot find article title"
         );
     }
